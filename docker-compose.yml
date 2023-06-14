@@ -1,0 +1,57 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    env_file: .env
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data/
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'",
+        ]
+      interval: 10s
+      timeout: 30s
+      retries: 30
+      start_period: 80s
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: backend
+    container_name: backend
+    restart: unless-stopped
+    env_file: .env
+    links:
+      - postgres:postgres
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+    networks:
+      - app-network
+volumes:
+  db-data:
+networks:
+  app-network:
+    driver: bridge
