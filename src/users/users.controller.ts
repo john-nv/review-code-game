@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  Delete,
+  Delete,  // khong dung thi xoa
   Post,
   Req,
   UnauthorizedException,
@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
 import { Public } from '../auth/decorators/public.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Request } from 'express';
+import { Request } from 'express'; // xap xep lai import cho ro rang
 
 @Controller('users')
 export class UsersController {
@@ -20,6 +20,7 @@ export class UsersController {
 
   @Public()
   @Post()
+  // logic chuyen vao service
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }

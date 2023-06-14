@@ -13,7 +13,7 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
     if (!requiredRoles) {
-      return true;
+      return true; // giong nhu jwt-auth
     }
     const req: Request = context.switchToHttp().getRequest();
     const user = req['user'].user;
