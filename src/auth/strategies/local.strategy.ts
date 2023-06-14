@@ -15,6 +15,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   validate(email: string, password: string) {
     const user = this.authService.validateUser(email, password);
     if (!user) {
+      // UnauthorizedException neu validateUser gap loi chuong trinh se bi crash
+      // bat buoc su dung try catch
       throw new UnauthorizedException('sign failed!');
     }
     return user;

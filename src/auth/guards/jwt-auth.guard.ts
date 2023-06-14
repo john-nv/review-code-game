@@ -15,7 +15,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
     if (isPublic) {
-      return true;
+      return true; // thay vi tra ve true nen xem xet ro rang hon
     }
     return super.canActivate(context);
   }

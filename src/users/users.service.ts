@@ -17,15 +17,18 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
+  // tao va dua repository vao folder Repository 
   async findByEmail(email: string): Promise<UserEntity> {
     return this.userRepository.findOneBy({ email });
   }
 
+  // neu voi 1 he thong lon trong truong hop nay nen su dung Promise.all() de giam thoi gian doi
   async create(createUserDto: CreateUserDto) {
     try {
       const password = await argon2.hash(createUserDto.password);
       return await this.userRepository.save({ ...createUserDto, role: ERole.Member, password });
     } catch(e) {
+      // create - bat buoc su dung HttpException, HttpStatus khong nen su dung UnprocessableEntityException
       throw new UnprocessableEntityException(e.detail);
     }
   }
